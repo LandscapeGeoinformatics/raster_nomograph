@@ -1,0 +1,320 @@
+<!DOCTYPE model>
+<Option type="Map">
+  <Option name="children" type="Map">
+    <Option name="gdal:rasterize_over_1" type="Map">
+      <Option name="active" type="bool" value="true"/>
+      <Option name="alg_config"/>
+      <Option name="alg_id" type="QString" value="gdal:rasterize_over"/>
+      <Option name="component_description" type="QString" value="Rasterize (overwrite with attribute) base plus lxnum"/>
+      <Option name="component_pos_x" type="double" value="758"/>
+      <Option name="component_pos_y" type="double" value="663"/>
+      <Option name="dependencies" type="StringList">
+        <Option type="QString" value="qgis:createconstantrasterlayer_1"/>
+        <Option type="QString" value="qgis:fieldcalculator_1"/>
+      </Option>
+      <Option name="id" type="QString" value="gdal:rasterize_over_1"/>
+      <Option name="outputs"/>
+      <Option name="outputs_collapsed" type="bool" value="true"/>
+      <Option name="parameters_collapsed" type="bool" value="true"/>
+      <Option name="params" type="Map">
+        <Option name="ADD" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="bool" value="false"/>
+          </Option>
+        </Option>
+        <Option name="EXTRA" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="QString" value=""/>
+          </Option>
+        </Option>
+        <Option name="FIELD" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="QString" value="lxnum1"/>
+          </Option>
+        </Option>
+        <Option name="INPUT" type="List">
+          <Option type="Map">
+            <Option name="child_id" type="QString" value="qgis:fieldcalculator_1"/>
+            <Option name="output_name" type="QString" value="OUTPUT"/>
+            <Option name="source" type="int" value="1"/>
+          </Option>
+        </Option>
+        <Option name="INPUT_RASTER" type="List">
+          <Option type="Map">
+            <Option name="child_id" type="QString" value="qgis:createconstantrasterlayer_1"/>
+            <Option name="output_name" type="QString" value="OUTPUT"/>
+            <Option name="source" type="int" value="1"/>
+          </Option>
+        </Option>
+      </Option>
+    </Option>
+    <Option name="gdal:translate_1" type="Map">
+      <Option name="active" type="bool" value="true"/>
+      <Option name="alg_config"/>
+      <Option name="alg_id" type="QString" value="gdal:translate"/>
+      <Option name="component_description" type="QString" value="Translate (convert format)"/>
+      <Option name="component_pos_x" type="double" value="1046"/>
+      <Option name="component_pos_y" type="double" value="763"/>
+      <Option name="dependencies" type="StringList">
+        <Option type="QString" value="gdal:rasterize_over_1"/>
+        <Option type="QString" value="qgis:createconstantrasterlayer_1"/>
+      </Option>
+      <Option name="id" type="QString" value="gdal:translate_1"/>
+      <Option name="outputs" type="Map">
+        <Option name="label_raster_out" type="Map">
+          <Option name="child_id" type="QString" value="gdal:translate_1"/>
+          <Option name="component_description" type="QString" value="label_raster_out"/>
+          <Option name="component_pos_x" type="double" value="1246"/>
+          <Option name="component_pos_y" type="double" value="808"/>
+          <Option name="default_value" type="invalid"/>
+          <Option name="mandatory" type="bool" value="false"/>
+          <Option name="name" type="QString" value="label_raster_out"/>
+          <Option name="output_name" type="QString" value="OUTPUT"/>
+        </Option>
+      </Option>
+      <Option name="outputs_collapsed" type="bool" value="true"/>
+      <Option name="parameters_collapsed" type="bool" value="true"/>
+      <Option name="params" type="Map">
+        <Option name="COPY_SUBDATASETS" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="bool" value="false"/>
+          </Option>
+        </Option>
+        <Option name="DATA_TYPE" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="int" value="2"/>
+          </Option>
+        </Option>
+        <Option name="EXTRA" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="QString" value="-strict -tr 5 5 -a_srs EPSG:3301 -a_nodata 0 -co COMPRESS=LZW"/>
+          </Option>
+        </Option>
+        <Option name="INPUT" type="List">
+          <Option type="Map">
+            <Option name="child_id" type="QString" value="qgis:createconstantrasterlayer_1"/>
+            <Option name="output_name" type="QString" value="OUTPUT"/>
+            <Option name="source" type="int" value="1"/>
+          </Option>
+        </Option>
+        <Option name="NODATA" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="double" value="0"/>
+          </Option>
+        </Option>
+        <Option name="OPTIONS" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="QString" value=""/>
+          </Option>
+        </Option>
+        <Option name="TARGET_CRS" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="QgsCoordinateReferenceSystem">
+              <spatialrefsys>
+                <wkt>PROJCRS["Estonian Coordinate System of 1997",BASEGEOGCRS["EST97",DATUM["Estonia 1997",ELLIPSOID["GRS 1980",6378137,298.257222101,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],ID["EPSG",4180]],CONVERSION["Estonian National Grid",METHOD["Lambert Conic Conformal (2SP)",ID["EPSG",9802]],PARAMETER["Latitude of false origin",57.5175539305556,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8821]],PARAMETER["Longitude of false origin",24,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8822]],PARAMETER["Latitude of 1st standard parallel",59.3333333333333,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8823]],PARAMETER["Latitude of 2nd standard parallel",58,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8824]],PARAMETER["Easting at false origin",500000,LENGTHUNIT["metre",1],ID["EPSG",8826]],PARAMETER["Northing at false origin",6375000,LENGTHUNIT["metre",1],ID["EPSG",8827]]],CS[Cartesian,2],AXIS["northing (X)",north,ORDER[1],LENGTHUNIT["metre",1]],AXIS["easting (Y)",east,ORDER[2],LENGTHUNIT["metre",1]],USAGE[SCOPE["unknown"],AREA["Estonia"],BBOX[57.52,20.37,60,28.2]],ID["EPSG",3301]]</wkt>
+                <proj4>+proj=lcc +lat_0=57.5175539305556 +lon_0=24 +lat_1=59.3333333333333 +lat_2=58 +x_0=500000 +y_0=6375000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+                <srsid>1259</srsid>
+                <srid>3301</srid>
+                <authid>EPSG:3301</authid>
+                <description>Estonian Coordinate System of 1997</description>
+                <projectionacronym>lcc</projectionacronym>
+                <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+                <geographicflag>false</geographicflag>
+              </spatialrefsys>
+            </Option>
+          </Option>
+        </Option>
+      </Option>
+    </Option>
+    <Option name="native:fixgeometries_1" type="Map">
+      <Option name="active" type="bool" value="true"/>
+      <Option name="alg_config"/>
+      <Option name="alg_id" type="QString" value="native:fixgeometries"/>
+      <Option name="component_description" type="QString" value="Fix geometries"/>
+      <Option name="component_pos_x" type="double" value="260"/>
+      <Option name="component_pos_y" type="double" value="186"/>
+      <Option name="dependencies"/>
+      <Option name="id" type="QString" value="native:fixgeometries_1"/>
+      <Option name="outputs"/>
+      <Option name="outputs_collapsed" type="bool" value="false"/>
+      <Option name="parameters_collapsed" type="bool" value="false"/>
+      <Option name="params" type="Map">
+        <Option name="INPUT" type="List">
+          <Option type="Map">
+            <Option name="parameter_name" type="QString" value="estsoilbase"/>
+            <Option name="source" type="int" value="0"/>
+          </Option>
+        </Option>
+      </Option>
+    </Option>
+    <Option name="qgis:createconstantrasterlayer_1" type="Map">
+      <Option name="active" type="bool" value="true"/>
+      <Option name="alg_config"/>
+      <Option name="alg_id" type="QString" value="qgis:createconstantrasterlayer"/>
+      <Option name="component_description" type="QString" value="Create constant raster layer base"/>
+      <Option name="component_pos_x" type="double" value="826"/>
+      <Option name="component_pos_y" type="double" value="349"/>
+      <Option name="dependencies"/>
+      <Option name="id" type="QString" value="qgis:createconstantrasterlayer_1"/>
+      <Option name="outputs"/>
+      <Option name="outputs_collapsed" type="bool" value="true"/>
+      <Option name="parameters_collapsed" type="bool" value="false"/>
+      <Option name="params" type="Map">
+        <Option name="EXTENT" type="List">
+          <Option type="Map">
+            <Option name="parameter_name" type="QString" value="slopebase"/>
+            <Option name="source" type="int" value="0"/>
+          </Option>
+        </Option>
+        <Option name="NUMBER" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="double" value="0"/>
+          </Option>
+        </Option>
+        <Option name="PIXEL_SIZE" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="double" value="5"/>
+          </Option>
+        </Option>
+        <Option name="TARGET_CRS" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="QgsCoordinateReferenceSystem">
+              <spatialrefsys>
+                <wkt>PROJCRS["Estonian Coordinate System of 1997",BASEGEOGCRS["EST97",DATUM["Estonia 1997",ELLIPSOID["GRS 1980",6378137,298.257222101,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],ID["EPSG",4180]],CONVERSION["Estonian National Grid",METHOD["Lambert Conic Conformal (2SP)",ID["EPSG",9802]],PARAMETER["Latitude of false origin",57.5175539305556,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8821]],PARAMETER["Longitude of false origin",24,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8822]],PARAMETER["Latitude of 1st standard parallel",59.3333333333333,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8823]],PARAMETER["Latitude of 2nd standard parallel",58,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8824]],PARAMETER["Easting at false origin",500000,LENGTHUNIT["metre",1],ID["EPSG",8826]],PARAMETER["Northing at false origin",6375000,LENGTHUNIT["metre",1],ID["EPSG",8827]]],CS[Cartesian,2],AXIS["northing (X)",north,ORDER[1],LENGTHUNIT["metre",1]],AXIS["easting (Y)",east,ORDER[2],LENGTHUNIT["metre",1]],USAGE[SCOPE["unknown"],AREA["Estonia"],BBOX[57.52,20.37,60,28.2]],ID["EPSG",3301]]</wkt>
+                <proj4>+proj=lcc +lat_0=57.5175539305556 +lon_0=24 +lat_1=59.3333333333333 +lat_2=58 +x_0=500000 +y_0=6375000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+                <srsid>1259</srsid>
+                <srid>3301</srid>
+                <authid>EPSG:3301</authid>
+                <description>Estonian Coordinate System of 1997</description>
+                <projectionacronym>lcc</projectionacronym>
+                <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+                <geographicflag>false</geographicflag>
+              </spatialrefsys>
+            </Option>
+          </Option>
+        </Option>
+      </Option>
+    </Option>
+    <Option name="qgis:fieldcalculator_1" type="Map">
+      <Option name="active" type="bool" value="true"/>
+      <Option name="alg_config"/>
+      <Option name="alg_id" type="QString" value="qgis:fieldcalculator"/>
+      <Option name="component_description" type="QString" value="Field calculator lxnum1"/>
+      <Option name="component_pos_x" type="double" value="302"/>
+      <Option name="component_pos_y" type="double" value="475"/>
+      <Option name="dependencies" type="StringList">
+        <Option type="QString" value="native:fixgeometries_1"/>
+      </Option>
+      <Option name="id" type="QString" value="qgis:fieldcalculator_1"/>
+      <Option name="outputs"/>
+      <Option name="outputs_collapsed" type="bool" value="false"/>
+      <Option name="parameters_collapsed" type="bool" value="false"/>
+      <Option name="params" type="Map">
+        <Option name="FIELD_LENGTH" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="int" value="6"/>
+          </Option>
+        </Option>
+        <Option name="FIELD_NAME" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="QString" value="lxnum1"/>
+          </Option>
+        </Option>
+        <Option name="FIELD_PRECISION" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="int" value="1"/>
+          </Option>
+        </Option>
+        <Option name="FIELD_TYPE" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="int" value="1"/>
+          </Option>
+        </Option>
+        <Option name="FORMULA" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="QString" value="CASE&#xa;&#xa;WHEN  &quot;LXTYPE1&quot; = 'GRAVELS' THEN 7&#xa;&#xa;WHEN  &quot;LXTYPE1&quot; = 'S' THEN 6&#xa;&#xa;WHEN  &quot;LXTYPE1&quot; = 'LS' THEN 5&#xa;&#xa;WHEN  &quot;LXTYPE1&quot; = 'SL' THEN 4&#xa;&#xa;WHEN  &quot;LXTYPE1&quot; = 'SiL' THEN 2&#xa;WHEN  &quot;LXTYPE1&quot; = 'SiCL' THEN 2&#xa;WHEN  &quot;LXTYPE1&quot; = 'CL' THEN 2&#xa;&#xa;WHEN  &quot;LXTYPE1&quot; = 'C' THEN 1&#xa;WHEN  &quot;LXTYPE1&quot; = 'HC' THEN 1&#xa;WHEN  &quot;LXTYPE1&quot; = 'L' THEN 1&#xa;&#xa;WHEN  &quot;LXTYPE1&quot; = 'PEAT' THEN 1&#xa;WHEN  &quot;LXTYPE1&quot; = 'HUMUS' THEN 1&#xa;&#xa;WHEN  &quot;LXTYPE1&quot; = 'no_info' THEN 1&#xa;WHEN  &quot;LXTYPE1&quot; = 'B' THEN 1&#xa;&#xa;END"/>
+          </Option>
+        </Option>
+        <Option name="INPUT" type="List">
+          <Option type="Map">
+            <Option name="child_id" type="QString" value="native:fixgeometries_1"/>
+            <Option name="output_name" type="QString" value="OUTPUT"/>
+            <Option name="source" type="int" value="1"/>
+          </Option>
+        </Option>
+        <Option name="NEW_FIELD" type="List">
+          <Option type="Map">
+            <Option name="source" type="int" value="2"/>
+            <Option name="static_value" type="bool" value="true"/>
+          </Option>
+        </Option>
+      </Option>
+    </Option>
+  </Option>
+  <Option name="help"/>
+  <Option name="modelVariables"/>
+  <Option name="model_group" type="QString" value="nomograph"/>
+  <Option name="model_name" type="QString" value="label_soil_types_nomo"/>
+  <Option name="parameterDefinitions" type="Map">
+    <Option name="estsoilbase" type="Map">
+      <Option name="data_types" type="List">
+        <Option type="int" value="-1"/>
+      </Option>
+      <Option name="default" type="invalid"/>
+      <Option name="description" type="QString" value="estsoil_base"/>
+      <Option name="flags" type="int" value="0"/>
+      <Option name="metadata"/>
+      <Option name="name" type="QString" value="estsoilbase"/>
+      <Option name="parameter_type" type="QString" value="vector"/>
+    </Option>
+    <Option name="gdal:translate_1:label_raster_out" type="Map">
+      <Option name="create_by_default" type="bool" value="true"/>
+      <Option name="default" type="invalid"/>
+      <Option name="description" type="QString" value="label_raster_out"/>
+      <Option name="flags" type="int" value="0"/>
+      <Option name="metadata"/>
+      <Option name="name" type="QString" value="gdal:translate_1:label_raster_out"/>
+      <Option name="parameter_type" type="QString" value="rasterDestination"/>
+      <Option name="supports_non_file_outputs" type="bool" value="false"/>
+    </Option>
+    <Option name="slopebase" type="Map">
+      <Option name="default" type="invalid"/>
+      <Option name="description" type="QString" value="slope_base"/>
+      <Option name="flags" type="int" value="0"/>
+      <Option name="metadata"/>
+      <Option name="name" type="QString" value="slopebase"/>
+      <Option name="parameter_type" type="QString" value="raster"/>
+    </Option>
+  </Option>
+  <Option name="parameters" type="Map">
+    <Option name="estsoilbase" type="Map">
+      <Option name="component_description" type="QString" value="estsoilbase"/>
+      <Option name="component_pos_x" type="double" value="240.41046658738355"/>
+      <Option name="component_pos_y" type="double" value="65.28849456768592"/>
+      <Option name="name" type="QString" value="estsoilbase"/>
+    </Option>
+    <Option name="slopebase" type="Map">
+      <Option name="component_description" type="QString" value="slopebase"/>
+      <Option name="component_pos_x" type="double" value="572.4104665873836"/>
+      <Option name="component_pos_y" type="double" value="66"/>
+      <Option name="name" type="QString" value="slopebase"/>
+    </Option>
+  </Option>
+</Option>
