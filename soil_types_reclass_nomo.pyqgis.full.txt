@@ -1,0 +1,57 @@
+CASE
+
+WHEN  "LXTYPE1" = 'GRAVELS' THEN 7
+
+WHEN  "LXTYPE1" = 'S' THEN 6
+
+WHEN  "LXTYPE1" = 'LS' THEN 5
+
+WHEN  "LXTYPE1" = 'SL' THEN 4
+
+WHEN  "LXTYPE1" = 'SiL' THEN 2
+WHEN  "LXTYPE1" = 'SiCL' THEN 2
+WHEN  "LXTYPE1" = 'CL' THEN 2
+
+WHEN  "LXTYPE1" = 'C' THEN 1
+WHEN  "LXTYPE1" = 'HC' THEN 1
+WHEN  "LXTYPE1" = 'L' THEN 1
+
+WHEN  "LXTYPE1" = 'PEAT' THEN 1
+WHEN  "LXTYPE1" = 'HUMUS' THEN 1
+
+WHEN  "LXTYPE1" = 'no_info' THEN 1
+WHEN  "LXTYPE1" = 'B' THEN 1
+
+END
+
+# nomograph
+
+7: coarse sand
+6: fine sand
+5: loamy sand
+4: sandy loam
+3: sandy clay - sandy loam
+2: clay loam - sandy clay
+1: loam
+
+# reconsider:
+
+- 'SiL' is Silty Loam and could even be class 1 or reinterpretation more sandy a 3
+- 'C' and 'HC' clay could stay as 2
+
+##
+
+S - Sand
+LS - Loamy Sand
+SL - Sandy Loam
+L - Loam
+SiL - Silt Loam
+SiCL - Silty Clay Loam
+CL Clay Loam
+C - Clay
+HC - Heavy Clay
+
+PEAT HUMUS
+GRAVELS GRAVELS
+
+no_info B no texture information
