@@ -57,6 +57,7 @@ class NomographProcessingAlgorithmV2(QgsProcessingAlgorithm):
     INPUT_SOIL_CLASS = 'INPUT_SOIL_CLASS'
     
     INPUT_NOMOGRAPH_CATCHMENTS_COEFFICIENT = 'INPUT_NOMOGRAPH_CATCHMENTS_COEFFICIENT'
+    INPUT_MIN_ABS_BUFFER_SIZE = 'INPUT_MIN_ABS_BUFFER_SIZE'
     INPUT_SLOPE_SCALE_FACTOR = 'INPUT_SLOPE_SCALE_FACTOR'
     INPUT_BUFSTRIP_SCALE_FACTOR = 'INPUT_BUFSTRIP_SCALE_FACTOR'
 
@@ -168,8 +169,16 @@ class NomographProcessingAlgorithmV2(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.INPUT_NOMOGRAPH_CATCHMENTS_COEFFICIENT,
-                self.tr('Input Nomograph Catchment Co-efficient (std 1)'),
-                defaultValue = 1, optional = True, minValue = 0, maxValue = 10000
+                self.tr('Input Nomograph Catchment Co-efficient (consider FLOWACC_MAX value / 100 )'),
+                defaultValue = 210, optional = False, minValue = 0, maxValue = 10000
+            )
+        )
+        
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                self.INPUT_MIN_ABS_BUFFER_SIZE,
+                self.tr('Input minimum absolut buffer size to set (e.g. 2)'),
+                optional = True, minValue = 0.0, maxValue = 10000.0
             )
         )
 
@@ -177,7 +186,7 @@ class NomographProcessingAlgorithmV2(QgsProcessingAlgorithm):
             QgsProcessingParameterNumber(
                 self.INPUT_SLOPE_SCALE_FACTOR,
                 self.tr('Input slope scaling factor (default 10000)'),
-                defaultValue = 10000, optional = True, minValue = 0, maxValue = 50000
+                defaultValue = 10000, optional = False, minValue = 0, maxValue = 50000
             )
         )
         
@@ -185,7 +194,7 @@ class NomographProcessingAlgorithmV2(QgsProcessingAlgorithm):
             QgsProcessingParameterNumber(
                 self.INPUT_BUFSTRIP_SCALE_FACTOR,
                 self.tr('Input buffer strip scaling factor (default 50)'),
-                defaultValue = 50, optional = True, minValue = 0, maxValue = 1000
+                defaultValue = 50, optional = False, minValue = 0, maxValue = 1000
             )
         )
 
@@ -193,7 +202,7 @@ class NomographProcessingAlgorithmV2(QgsProcessingAlgorithm):
             QgsProcessingParameterNumber(
                 self.INPUT_FLOWLEN_MAX,
                 self.tr('Input Flow Length normalise max value (default 1391.5403)'),
-                defaultValue = 1391.5403, optional = True, minValue = 1.0
+                defaultValue = 1391.5403, optional = False, minValue = 1.0
             )
         )
         
@@ -201,7 +210,7 @@ class NomographProcessingAlgorithmV2(QgsProcessingAlgorithm):
             QgsProcessingParameterNumber(
                 self.INPUT_FLOWACC_MAX,
                 self.tr('Input Flow Accumulation normalise max value (default 21508)'),
-                defaultValue = 21508.0, optional = True, minValue = 1
+                defaultValue = 21508.0, optional = False, minValue = 1.0
             )
         )
         
@@ -209,7 +218,7 @@ class NomographProcessingAlgorithmV2(QgsProcessingAlgorithm):
             QgsProcessingParameterNumber(
                 self.INPUT_LSFACTOR_MAX,
                 self.tr('Input LS Factor normalise max value (default 100)'),
-                defaultValue = 100.0, optional = True, minValue = 1.0
+                defaultValue = 100.0, optional = False, minValue = 1.0
             )
         )
 
@@ -217,7 +226,7 @@ class NomographProcessingAlgorithmV2(QgsProcessingAlgorithm):
             QgsProcessingParameterNumber(
                 self.INPUT_FLOWLEN_WEIGHT,
                 self.tr('Input Flow Length weight (default 3)'),
-                defaultValue = 3.0, optional = True, minValue = 1.0, maxValue = 100
+                defaultValue = 3.0, optional = False, minValue = 1.0, maxValue = 100
             )
         )
         
@@ -225,7 +234,7 @@ class NomographProcessingAlgorithmV2(QgsProcessingAlgorithm):
             QgsProcessingParameterNumber(
                 self.INPUT_FLOWACC_WEIGHT,
                 self.tr('Input Flow Accumulation weight (default 3)'),
-                defaultValue = 3.0, optional = True, minValue = 1.0, maxValue = 100
+                defaultValue = 3.0, optional = False, minValue = 1.0, maxValue = 100
             )
         )
         
@@ -233,7 +242,7 @@ class NomographProcessingAlgorithmV2(QgsProcessingAlgorithm):
             QgsProcessingParameterNumber(
                 self.INPUT_LSFACTOR_WEIGHT,
                 self.tr('Input LS Factor weight (default 3)'),
-                defaultValue = 3.0, optional = True, minValue = 1.0, maxValue = 100
+                defaultValue = 3.0, optional = False, minValue = 1.0, maxValue = 100
             )
         )
         
@@ -415,6 +424,12 @@ class NomographProcessingAlgorithmV2(QgsProcessingAlgorithm):
         nomo_catch_coeff = self.parameterAsInt(
             parameters,
             self.INPUT_NOMOGRAPH_CATCHMENTS_COEFFICIENT,
+            context
+        )
+        
+        min_abs_buffer_size = self.parameterAsDouble(
+            parameters,
+            self.INPUT_MIN_ABS_BUFFER_SIZE,
             context
         )
 
@@ -614,8 +629,12 @@ class NomographProcessingAlgorithmV2(QgsProcessingAlgorithm):
 
         feedback.pushInfo('starting nomograph calculations')
 
+        if min_abs_buffer_size is None:
+            min_abs_buffer_size = 0
+        elif min_abs_buffer_size < 0:
+            min_abs_buffer_size = 0
         buf_recom_val = np.where(soil_band_x==0, np.nan, self.pre_vect_nomo_simple(slope_len_band_x_np, slope_band_x, soil_band_x, slope_scale_factor, buffer_strip_scale))
-        buf_recom_val_np = np.where(buf_recom_val < 3, 3, buf_recom_val)
+        buf_recom_val_np = np.where(buf_recom_val < min_abs_buffer_size, min_abs_buffer_size, buf_recom_val)
         
         # Update the progress bar
         feedback.setProgress(90)
