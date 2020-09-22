@@ -111,8 +111,8 @@ def degr_to_perc_slope(degrees):
     return (np.tan(np.radians(degrees)))*100
 
 
-def pre_vect_slope_angle_rel_y_val(slope_angle_degr, slopelen_m, slope_scale_factor, nomo_catch_coeff):
-    slope_rel=slopelen_m/slope_scale_factor*nomo_catch_coeff
+def pre_vect_slope_angle_rel_y_val(slope_angle_degr, slopelen_m, slope_scale_factor):
+    slope_rel=slopelen_m/slope_scale_factor
     alpha = getDataParams()['pred_sl'](slope_angle_degr)
     y = slope_rel * (np.tan(np.radians(alpha)))
     return y
@@ -129,8 +129,8 @@ def pre_vect_soiltype_rel_x_val(soil_class, y, buffer_strip_scale):
     return x * buffer_strip_scale
 
 
-def pre_vect_nomo_simple(slopelen_m, slope_angle_degr, soil_class, slope_scale_factor, buffer_strip_scale, nomo_catch_coeff):
-    nomo_vals = pre_vect_soiltype_rel_x_val(soil_class, pre_vect_slope_angle_rel_y_val(slope_angle_degr, slopelen_m, slope_scale_factor, nomo_catch_coeff), buffer_strip_scale )
+def pre_vect_nomo_simple(slopelen_m, slope_angle_degr, soil_class, slope_scale_factor, buffer_strip_scale):
+    nomo_vals = pre_vect_soiltype_rel_x_val(soil_class, pre_vect_slope_angle_rel_y_val(slope_angle_degr, slopelen_m, slope_scale_factor), buffer_strip_scale )
     return nomo_vals
 
 
@@ -140,6 +140,7 @@ def nomograph(slope_raster_in,
                     lsfactor_raster_in,
                     soil_class_raster_in,
                     nomo_catch_coeff,
+                    min_abs_buffer_size,
                     slope_scale_factor,
                     buffer_strip_scale,
                     flowlen_max_value,
@@ -221,15 +222,19 @@ def nomograph(slope_raster_in,
     all_weights = flowlen_weight + flowacc_weight + lsfactor_weight
     print(f"weighing rasters flow_length ({flowlen_weight}), flow_acc ({flowacc_weight}) and ls_factor ({lsfactor_weight}) into 1-100 ({all_weights})")
 
-    slope_len_band_x = ( (flowlen_band_x * flowlen_weight) + (flowacc_band_x * flowacc_weight) + (lsfactor_band_x * lsfactor_weight) ) / all_weights
+    slope_len_band_x = ( (flowlen_band_x * flowlen_weight) + (flowacc_band_x * flowacc_weight) + (lsfactor_band_x * lsfactor_weight) ) / all_weights * nomo_catch_coeff
     slope_len_band_x_np = np.where(slope_len_band_x < 0, 0, slope_len_band_x)
 
     print('starting nomograph calculations')
-
-    buf_recom_val = np.where(soil_band_x==0, np.nan, pre_vect_nomo_simple(slope_len_band_x_np, slope_band_x, soil_band_x, slope_scale_factor, buffer_strip_scale, nomo_catch_coeff))
+    if min_abs_buffer_size is None:
+        min_abs_buffer_size = 0
+    elif min_abs_buffer_size < 0:
+        min_abs_buffer_size = 0
+    buf_recom_val = np.where(soil_band_x==0, np.nan, pre_vect_nomo_simple(slope_len_band_x_np, slope_band_x, soil_band_x, slope_scale_factor, buffer_strip_scale))
+    buf_recom_val_np = np.where(buf_recom_val < min_abs_buffer_size, min_abs_buffer_size, buf_recom_val)
 
     print('writing final output raster for buffer strip size')
-    buf_recom_val_x = np.nan_to_num(buf_recom_val, copy=False, nan=-1)
+    buf_recom_val_x = np.nan_to_num(buf_recom_val_np, copy=False, nan=-1)
 
     driver = gdal.GetDriverByName("GTIFF")
 
@@ -285,7 +290,6 @@ def nomograph(slope_raster_in,
     return {'OUTPUT_BUF_SIZE': dest_fname, 'OUTPUT_SPEC_SLOPELEN': dest_fname_slopelen}
 
 
-
 def params_to_nomograph(params_dict):
     
     INPUT_SLOPE = params_dict['INPUT_SLOPE']
@@ -295,6 +299,7 @@ def params_to_nomograph(params_dict):
     INPUT_SOIL_CLASS = params_dict['INPUT_SOIL_CLASS']
     
     INPUT_NOMOGRAPH_CATCHMENTS_COEFFICIENT = params_dict['INPUT_NOMOGRAPH_CATCHMENTS_COEFFICIENT']
+    INPUT_MIN_ABS_BUFFER_SIZE = params_dict['INPUT_MIN_ABS_BUFFER_SIZE']
     INPUT_SLOPE_SCALE_FACTOR = params_dict['INPUT_SLOPE_SCALE_FACTOR']
     INPUT_BUFSTRIP_SCALE_FACTOR = params_dict['INPUT_BUFSTRIP_SCALE_FACTOR']
 
@@ -315,6 +320,7 @@ def params_to_nomograph(params_dict):
                     lsfactor_raster_in = INPUT_LS_FACTOR,
                     soil_class_raster_in = INPUT_SOIL_CLASS,
                     nomo_catch_coeff = INPUT_NOMOGRAPH_CATCHMENTS_COEFFICIENT,
+                    min_abs_buffer_size = INPUT_MIN_ABS_BUFFER_SIZE,
                     slope_scale_factor = INPUT_SLOPE_SCALE_FACTOR,
                     buffer_strip_scale = INPUT_BUFSTRIP_SCALE_FACTOR,
                     flowlen_max_value = INPUT_FLOWLEN_MAX,
@@ -335,7 +341,8 @@ if __name__ == '__main__':
                     'INPUT_FLOW_ACC' : r'//rocket.hpc.ut.ee/gis/HannaIngrid/5m_calc/zone_21_flowacc_5m.tif',
                     'INPUT_LS_FACTOR' : r'//rocket.hpc.ut.ee/gis/kmoch/nomograph/soil_prep/ls_faktor5m_zone_21.tif',
                     'INPUT_SOIL_CLASS' : r'//rocket.hpc.ut.ee/gis/kmoch/nomograph/soil_prep/estsoil_proc_overz_3301_21_slopebase_labeled.tif',
-                    'INPUT_NOMOGRAPH_CATCHMENTS_COEFFICIENT' : 1,
+                    'INPUT_NOMOGRAPH_CATCHMENTS_COEFFICIENT' : 210,
+                    'INPUT_MIN_ABS_BUFFER_SIZE': 3,
                     'INPUT_SLOPE_SCALE_FACTOR' : 10000,
                     'INPUT_BUFSTRIP_SCALE_FACTOR' : 50,
                     'INPUT_FLOWLEN_MAX' : 1392,
