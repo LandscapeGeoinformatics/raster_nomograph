@@ -106,3 +106,9 @@ venv.bak/
 .idea/
 spark-warehouse/
 temp_out/
+
+*.tif
+*.tif.aux.xml
+*.qgz
+*.gpkg
+*.shp
