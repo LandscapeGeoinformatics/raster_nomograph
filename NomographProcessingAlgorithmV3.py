@@ -24,6 +24,7 @@ from qgis.core import (
     QgsProcessingParameterRasterLayer,
     QgsProcessingParameterRasterDestination,
     QgsProcessingParameterNumber,
+    QgsProcessingParameterBoolean
 )
 from qgis import processing
 
@@ -73,6 +74,8 @@ class NomographProcessingAlgorithmV3(QgsProcessingAlgorithm):
     INPUT_FLOWACC_WEIGHT = "INPUT_FLOWACC_WEIGHT"
     INPUT_LSFACTOR_WEIGHT = "INPUT_LSFACTOR_WEIGHT"
 
+    INPUT_LOGARYTHM_SWITCH = "INPUT_LOGARYTHM_SWITCH"
+
     OUTPUT_BUF_SIZE = "OUTPUT_BUF_SIZE"
     OUTPUT_SPEC_SLOPELEN = "OUTPUT_SPEC_SLOPELEN"
 
@@ -80,7 +83,7 @@ class NomographProcessingAlgorithmV3(QgsProcessingAlgorithm):
         """
         Returns a translatable string with the self.tr() function.
         """
-        return QCoreApplication.translate("Nomograph Processing Algorithm v2", string)
+        return QCoreApplication.translate("Nomograph Processing Algorithm v3", string)
 
     def createInstance(self):
         return NomographProcessingAlgorithmV3()
@@ -93,14 +96,14 @@ class NomographProcessingAlgorithmV3(QgsProcessingAlgorithm):
         lowercase alphanumeric characters only and no spaces or other
         formatting characters.
         """
-        return "nomographrastercalc2"
+        return "nomographrastercalc3"
 
     def displayName(self):
         """
         Returns the translated algorithm name, which should be used for any
         user-visible display of the algorithm name.
         """
-        return self.tr("Nomograph Processing Algorithm V2 Script")
+        return self.tr("Nomograph Processing Algorithm V3 Script")
 
     def group(self):
         """
@@ -273,6 +276,16 @@ class NomographProcessingAlgorithmV3(QgsProcessingAlgorithm):
                 optional=False,
                 minValue=1.0,
                 maxValue=100,
+            )
+        )
+
+        # INPUT_LOGARYTHM_SWITCH = params_dict["INPUT_LOGARYTHM_SWITCH"]
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.INPUT_LOGARYTHM_SWITCH,
+                self.tr("Apply Logarythm to input raster layers before normalisation"),
+                defaultValue=True,
+                optional=False,
             )
         )
 
@@ -492,6 +505,10 @@ class NomographProcessingAlgorithmV3(QgsProcessingAlgorithm):
             parameters, self.INPUT_LSFACTOR_WEIGHT, context
         )
 
+        logarythm_switch = self.parameterAsBoolean(
+            parameters, self.INPUT_LOGARYTHM_SWITCH, context
+        )
+
         # If source was not found, throw an exception to indicate that the algorithm
         # encountered a fatal error. The exception text can be any string, but in this
         # case we use the pre-built invalidSourceError method to return a standard
@@ -544,7 +561,7 @@ class NomographProcessingAlgorithmV3(QgsProcessingAlgorithm):
 
         slope_tif = gdal.Open(slope_prov.dataSourceUri())
         slope_nodata = slope_prov.sourceNoDataValue(1)
-        slope_band = slope_tif.GetRasterBand(1).ReadAsArray()
+        slope_band = slope_tif.GetRasterBand(1).ReadAsArray().astype(np.float64)
 
         height = slope_raster_in.height()
         width = slope_raster_in.width()
@@ -562,7 +579,7 @@ class NomographProcessingAlgorithmV3(QgsProcessingAlgorithm):
         feedback.pushInfo("reading flow length tif")
         flowlen_tif = gdal.Open(flowlen_raster_in.dataProvider().dataSourceUri())
         flowlen_nodata = flowlen_raster_in.dataProvider().sourceNoDataValue(1)
-        flowlen_band = flowlen_tif.GetRasterBand(1).ReadAsArray()
+        flowlen_band = flowlen_tif.GetRasterBand(1).ReadAsArray().astype(np.float64)
 
         # Update the progress bar
         feedback.setProgress(25)
@@ -570,7 +587,7 @@ class NomographProcessingAlgorithmV3(QgsProcessingAlgorithm):
         feedback.pushInfo("reading flow accumulation tif")
         flowacc_tif = gdal.Open(flowacc_raster_in.dataProvider().dataSourceUri())
         flowacc_nodata = flowacc_raster_in.dataProvider().sourceNoDataValue(1)
-        flowacc_band = flowacc_tif.GetRasterBand(1).ReadAsArray()
+        flowacc_band = flowacc_tif.GetRasterBand(1).ReadAsArray().astype(np.float64)
 
         # Update the progress bar
         feedback.setProgress(35)
@@ -578,7 +595,7 @@ class NomographProcessingAlgorithmV3(QgsProcessingAlgorithm):
         feedback.pushInfo("reading ls factor tif")
         lsfactor_tif = gdal.Open(lsfactor_raster_in.dataProvider().dataSourceUri())
         lsfactor_nodata = lsfactor_raster_in.dataProvider().sourceNoDataValue(1)
-        lsfactor_band = lsfactor_tif.GetRasterBand(1).ReadAsArray()
+        lsfactor_band = lsfactor_tif.GetRasterBand(1).ReadAsArray().astype(np.float64)
 
         # Update the progress bar
         feedback.setProgress(45)
@@ -588,9 +605,27 @@ class NomographProcessingAlgorithmV3(QgsProcessingAlgorithm):
         soil_nodata = soil_class_raster_in.dataProvider().sourceNoDataValue(
             1
         )  # but also 0
-        soil_band = soil_tif.GetRasterBand(1).ReadAsArray()
+        soil_band = soil_tif.GetRasterBand(1).ReadAsArray().astype(np.int64)
 
         slope_band_x = slope_band
+
+        # Update the progress bar
+        feedback.setProgress(50)
+
+        if logarythm_switch:
+
+            feedback.pushInfo("applying pre-normalisation log10-smoothing")
+            flowlen_band_log = np.log10(flowlen_band)
+            flowlen_band = np.where(flowlen_band_log < 0, 0, flowlen_band_log)
+            flowlen_max_value = np.log10(flowlen_max_value)
+
+            flowacc_band_log = np.log10(flowacc_band)
+            flowacc_band = np.where(flowacc_band_log < 0, 0, flowacc_band_log)
+            flowacc_max_value = np.log10(flowacc_max_value)
+
+            lsfactor_band_log = np.log10(lsfactor_band)
+            lsfactor_band = np.where(lsfactor_band_log < 0, 0, lsfactor_band_log)
+            lsfactor_max_value = np.log10(lsfactor_max_value)
 
         # Update the progress bar
         feedback.setProgress(55)
