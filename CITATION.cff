@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use these materials, please cite them as below."
+authors:
+- affiliation: University of Tartu
+  family-names: Kmoch
+  given-names: Alexander
+  orcid: 0000-0003-4386-4450
+- affiliation: University of Tartu
+  family-names: Uuemaa
+  given-names: Evelyn
+  orcid: 0000-0002-0782-6740
+title: Calculation of recommended riparian buffer strip width based on nomograph
+version: 0.0.9
+date-released: '2025-11-17'
+doi: 10.5281/zenodo.xxx
+keywords:
+- riparian buffer strips
+- geospatial
+- geoinformatics
+license:
+- MIT
+url: "https://github.com/LandscapeGeoinformatics/raster_nomograph/"
