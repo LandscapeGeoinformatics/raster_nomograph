@@ -6,9 +6,24 @@ The repository consists of scripts that enable calculating recommended riparian 
 
 Nomograph by Mander and Kuusemets 1998
 
-![](bufferwidth_in_protectionzone.png)
 
-buffer zone effect from nomgraph in protection zone
+## Nomograph impementation
+
+- buff_width_calc_vectorized_v4.py - nomograph implementation in Python
+- NomographProcessingAlgorithmV4.py - nomograph implementation in Python as QGIS Processing algorithm plugin
+
+## Uncertainty analysis
+
+- uncertainty_analysis.jpynb - script to perform correlation analysis between all the input layers of the nomograph to indirectly measure the sensitivity of the  final output (buffer width) to the inputs.
+
+## Buffer statistics
+
+- topo_stats.ipynb - script that calculates some statistics (e.g. min, max etc) of the resulting buffer strip witdh for the processing tiles
+
+- final_buf_stats.ipynb - script to calculate the histogram of vectorised buffer widths of natural water bodies and drainage ditches
+
+- final_buf_vegetation_stats.ipynb - Ssript to calculate the proportion of vegetation cover and arable land in the buffer strips.
+
 
 ## References
 
@@ -18,4 +33,4 @@ Mander, Ü., Kuusemets, V., 1998. Mander, Ü. and Kuusemets, V. 1998. Non-point 
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17860496.svg)](https://doi.org/10.5281/zenodo.17860496)
 
-The software is available under an open-source license. Please refer to the Zenodo DOI and the published paper when using it.
+The software is available under a MIT license. Please refer to the Zenodo DOI and the published paper when using it.
