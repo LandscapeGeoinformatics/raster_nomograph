@@ -34,10 +34,6 @@ END
 2: clay loam - sandy clay
 1: loam
 
-# reconsider:
-
-- 'SiL' is Silty Loam and could even be class 1 or reinterpretation more sandy a 3
-- 'C' and 'HC' clay could stay as 2
 
 ##
 

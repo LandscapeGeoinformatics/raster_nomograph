@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+# Nomograph implementation in Python as QGIS Processing algorithm plugin
 """
 ***************************************************************************
 *                                                                         *
